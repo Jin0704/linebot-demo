@@ -3,9 +3,9 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000
 
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
+
+require('dotenv').config()
+
 //create LINE SDK config from env
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -16,9 +16,14 @@ const config = {
 const client = new line.Client(config)
 
 
+config.on('connection', () => {
+  console.log('Hello')
+})
+
 // register a webhook handler with middleware
 app.post('/callback', line.middleware(config), (req, res) => {
   console.log(req.body)
+  console.log(req.body.events)
   Promise
     .all(req.body.events.map(handleEvent))  //map 用function handleEvent來處理
     .then((result) => res.json(result))
@@ -36,7 +41,12 @@ function handleEvent(event) {
   }
 
   // create a echoing text message
-  const echo = { type: 'text', text: event.message.text }
+  if (event.message.text === '哈哈') {
+    var echo = { type: 'text', text: '哈三小!' }
+  } else {
+    var echo = { type: 'text', text: event.message.text }
+  }
+
 
   //use reply api
   return client.replyMessage(event.replyToken, echo)
