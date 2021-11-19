@@ -16,11 +16,6 @@ const config = {
 //create line sdk client
 const client = new line.Client(config)
 
-
-config.on('connection', () => {
-  console.log('Hello')
-})
-
 // register a webhook handler with middleware
 app.post('/', line.middleware(config), (req, res) => {
   console.log(req.body)
