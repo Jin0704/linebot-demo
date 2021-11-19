@@ -8,6 +8,7 @@ require('dotenv').config()
 
 //create LINE SDK config from env
 const config = {
+  channelId: process.env.CHANNEL_ID,
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.CHANNEL_SECRET,
 };
@@ -21,7 +22,7 @@ config.on('connection', () => {
 })
 
 // register a webhook handler with middleware
-app.post('/callback', line.middleware(config), (req, res) => {
+app.post('/', line.middleware(config), (req, res) => {
   console.log(req.body)
   console.log(req.body.events)
   Promise
